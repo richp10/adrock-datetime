@@ -1,0 +1,8 @@
+STRINGTABLE
+{
+ 54500,	"Accept"
+ 54501,	"Cancel"
+ 54502,	"Clear the Date"
+ 54503,	"Goto Today : "
+}
+
