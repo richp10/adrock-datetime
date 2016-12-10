@@ -87,32 +87,32 @@ Begin
   if (TimeInputStyle = tisHMS12) or (TimeInputStyle = tisHMS24) or (TimeInputStyle = tisHMSAMPM)  then
     result := TRUE
   else if (TimeInputStyle = tisWindowsShort) then
-   Result := (Pos('S', Uppercase(ShortTimeFormat)) > 0)
+   Result := (Pos('S', Uppercase(FormatSettings.ShortTimeFormat)) > 0)
   else if (TimeInputStyle = tisWindowsLong) then
-   Result := (Pos('S', Uppercase(LongTimeFormat)) > 0);
+   Result := (Pos('S', Uppercase(FormatSettings.LongTimeFormat)) > 0);
 end;
 
 Function TAdrockDateTimeEditCustom.ReturnMonthFormated : String;
 begin
  if ((ShowMonthAs = smShortMonth) or (ShowMonthAs = smLongMonth)) and ((fDate.Month >= 1) and (fDate.Month <= 12)) then
    if (ShowMonthAs = smLongMonth) then
-      Result := LongMonthNames[fDate.Month]
+      Result := FormatSettings.LongMonthNames[fDate.Month]
    else
-      Result := ShortMonthNames[fDate.Month]
+      Result := FormatSettings.ShortMonthNames[fDate.Month]
  else
    Result := FormatFloat('00', fDate.Month);
 end;
 
 Function TAdrockDateTimeEditCustom.ReturnTimeAMString : String;
 begin
-  Result := TimeAMString;
+  Result := FormatSettings.TimeAMString;
   if (Result = '') then
     Result := LoadStr(ADDATETM_AMSTRING);
 end;
 
 Function TAdrockDateTimeEditCustom.ReturnTimePMString : String;
 begin
-  Result := TimePMString;
+  Result := FormatSettings.TimePMString;
   if (Result = '') then
     Result := LoadStr(ADDATETM_PMSTRING);
 end;
@@ -271,10 +271,10 @@ Var
           SavedColor := Font.Color;
           if (WeekDayStyle = wdsShortWeekDay) then
              DOTextRect(Canvas, (SubFieldBeingEdited = SubFieldWeekDay), FALSE, FALSE,
-                (SubFieldBeingEdited = SubFieldWeekDay), ARect, ShortDayNames[fWeekDay])
+                (SubFieldBeingEdited = SubFieldWeekDay), ARect, FormatSettings.ShortDayNames[fWeekDay])
           else
              DOTextRect(Canvas, (SubFieldBeingEdited = SubFieldWeekDay), FALSE, FALSE,
-                (SubFieldBeingEdited = SubFieldWeekDay), ARect, LongDayNames[fWeekDay]);
+                (SubFieldBeingEdited = SubFieldWeekDay), ARect, FormatSettings.LongDayNames[fWeekDay]);
           Font.Color := SavedColor;
        end;
      end;
@@ -399,14 +399,14 @@ Var
          if (fShowDay) then
            begin
              ARect := REct(FirstDateSeparatorStart,2,FirstDateSeparatorEnd, ClientHeight-2);
-             DOTextRect(Canvas, FALSE, FALSE, TRUE, FALSE, ARect, DateSeparator);
+             DOTextRect(Canvas, FALSE, FALSE, TRUE, FALSE, ARect, FormatSettings.DateSeparator);
            end;
 
          if (fShowYear) then
           begin
             Brush.Style := bsClear;
             ARect := REct(SecondDateSeparatorStart,2,SecondDateSeparatorEnd, ClientHeight-2);
-            DOTextRect(Canvas, FALSE, FALSE, TRUE, FALSE, ARect, DateSeparator);
+            DOTextRect(Canvas, FALSE, FALSE, TRUE, FALSE, ARect, FormatSettings.DateSeparator);
           end;
        end;
 
@@ -414,13 +414,13 @@ Var
        begin
          Brush.Style := bsClear;
          ARect := REct(FirstTimeSeparatorStart,2,FirstTimeSeparatorEnd, ClientHeight-2);
-         DOTextRect(Canvas, FALSE, FALSE, TRUE, FALSE, ARect, TimeSeparator);
+         DOTextRect(Canvas, FALSE, FALSE, TRUE, FALSE, ARect, FormatSettings.TimeSeparator);
 
          if (DoesTimeFormatContainSeconds = TRUE) then
           begin
             Brush.Style := bsClear;
             ARect := REct(SecondTimeSeparatorStart,2,SecondTimeSeparatorEnd, ClientHeight-2);
-            DOTextRect(Canvas, FALSE, FALSE, TRUE, FALSE, ARect, TimeSeparator);
+            DOTextRect(Canvas, FALSE, FALSE, TRUE, FALSE, ARect, FormatSettings.TimeSeparator);
           end;
      end;
      end;
@@ -645,9 +645,9 @@ begin
     for Pos :=1 to 7 do
      begin
       if (WeekDayStyle = wdsShortWeekDay) then
-        Value := Canvas.TextWidth(ShortDayNames[Pos])
+        Value := Canvas.TextWidth(FormatSettings.ShortDayNames[Pos])
       else
-        Value := Canvas.TextWidth(LongDayNames[Pos]);
+        Value := Canvas.TextWidth(FormatSettings.LongDayNames[Pos]);
       if (Value > fWeekDayWidth) then
         fWeekDayWidth := Value;
      end;
@@ -677,24 +677,24 @@ begin
     else
      begin
        DayWidth := Canvas.TextWidth('99')+TEXTWIDTH_EXTRAPIXELS;
-       DateSeperatorWidthFirst := Canvas.TextWidth(DateSeparator)+1;
+       DateSeperatorWidthFirst := Canvas.TextWidth(FormatSettings.DateSeparator)+1;
      end;
 
-    DateSeperatorWidthSecond := Canvas.TextWidth(DateSeparator)+1;
+    DateSeperatorWidthSecond := Canvas.TextWidth(FormatSettings.DateSeparator)+1;
 
     if (ShowMonthAs = smShortMonth) then
       begin
         MonthWidth := 0;
         for Pos := 1 to 12 do
-          if (MonthWidth < Canvas.TextWidth(ShortMonthNames[Pos])) then
-             MonthWidth  := Canvas.TextWidth(ShortMonthNames[Pos]);
+          if (MonthWidth < Canvas.TextWidth(FormatSettings.ShortMonthNames[Pos])) then
+             MonthWidth  := Canvas.TextWidth(FormatSettings.ShortMonthNames[Pos]);
       end
     else if (ShowMonthAs = smLongMonth) then
       begin
         MonthWidth := 0;
         for Pos := 1 to 12 do
-          if (MonthWidth < Canvas.TextWidth(LongMonthNames[Pos])+TEXTWIDTH_EXTRAPIXELS) then
-             MonthWidth  := Canvas.TextWidth(LongMonthNames[Pos])+TEXTWIDTH_EXTRAPIXELS;
+          if (MonthWidth < Canvas.TextWidth(FormatSettings.LongMonthNames[Pos])+TEXTWIDTH_EXTRAPIXELS) then
+             MonthWidth  := Canvas.TextWidth(FormatSettings.LongMonthNames[Pos])+TEXTWIDTH_EXTRAPIXELS;
       end
     else
       MonthWidth         := Canvas.TextWidth('00')+TEXTWIDTH_EXTRAPIXELS;
@@ -710,13 +710,13 @@ begin
     HourWidth          := Canvas.TextWidth('00')+TEXTWIDTH_EXTRAPIXELS;
     MinuteWidth        := Canvas.TextWidth('00')+TEXTWIDTH_EXTRAPIXELS;
     SecondWidth        := Canvas.TextWidth('00')+TEXTWIDTH_EXTRAPIXELS;
-    TimeSeperatorWidthFirst := Canvas.TextWidth(TimeSeparator);
-    TimeSeperatorWidthSecond := Canvas.TextWidth(TimeSeparator);
+    TimeSeperatorWidthFirst := Canvas.TextWidth(FormatSettings.TimeSeparator);
+    TimeSeperatorWidthSecond := Canvas.TextWidth(FormatSettings.TimeSeparator);
     ExtraWidth := Canvas.TextWidth(ExtraText)+3;
 
-    AMPMWidth          := Canvas.TextWidth(TimeAMString);
-    if (Canvas.TextWidth(TimePMString) > AMPMWidth) then
-      AMPMWidth := Canvas.TextWidth(TimePMString);
+    AMPMWidth          := Canvas.TextWidth(FormatSettings.TimeAMString);
+    if (Canvas.TextWidth(FormatSettings.TimePMString) > AMPMWidth) then
+      AMPMWidth := Canvas.TextWidth(FormatSettings.TimePMString);
     inc(AMPMWidth);
 
 

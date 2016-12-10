@@ -224,7 +224,7 @@ uses
   WinTypes, WinProcs,
 {$endif}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, DsgnIntf, AdEdit, AdString;
+  StdCtrls, {DsgnIntf,} AdEdit, AdString;
 
 type
   TOnTAdrockAutoCompletionEditComplete = procedure (Sender: TObject; Key:Word; var CompleteWith:String;

@@ -224,8 +224,8 @@ uses
   {$endif}
   Clipbrd,
   DesignEditors,
-  DesignIntf{dsgnintf}, Forms, StdCtrls, Buttons, Dialogs, ExtCtrls, DB, DBTables,
-  AdButEdt;
+  DesignIntf{dsgnintf}, Forms, StdCtrls, Buttons, Dialogs, ExtCtrls, DB, {DBTables,}
+  AdButEdt, ToolsAPI;
 
   {$ifdef UNREGISTERED}
   {$DEFINE ADROCK_NAG_SCREEN_TYPE}
@@ -905,7 +905,7 @@ begin
   SpeedButton19.Top := 2+(FButtonHeight*3);
   SpeedButton19.Width := FButtonWidth-TAdrockCalcEdit( RealctlParent ).FButtonGap;
   SpeedButton19.Height := FButtonHeight-TAdrockCalcEdit( RealctlParent ).FButtonGap;
-  SpeedButton19.Caption := DecimalSeparator; {'.';}
+  SpeedButton19.Caption := FormatSettings.DecimalSeparator; {'.';}
   SpeedButton19.Font.Assign(TAdrockCalcEdit( RealctlParent ).CalculatorFont);
   SpeedButton19.Font.Color := TAdrockCalcEdit( RealctlParent ).ColorCalcDigits;
  { SpeedButton19.Font.Height := -11;
@@ -1542,7 +1542,7 @@ begin
          Result.Caption := '';
          TAdrockCalcEdit( RealctlParent ).Text := '';
        end;
-     if (Key in [DecimalSeparator,'0'..'9']) then
+     if (Key in [FormatSettings.DecimalSeparator,'0'..'9']) then
        begin
           if (C_Command = CO_Startup) then
           begin
@@ -1551,16 +1551,16 @@ begin
           end;
           if (C_Command = CO_EQUAL) then
             C_Command := CO_Nothing;
-          if (Key = DecimalSeparator) then
+          if (Key = FormatSettings.DecimalSeparator) then
             begin
               if (TAdrockCalcEdit( RealctlParent ).MaxDecimals = 0) then
                 exit
               else  if ((s = '') or (s = '0')) then
                 begin
-                 S := '0'+DecimalSeparator;
+                 S := '0'+FormatSettings.DecimalSeparator;
                 end
               else
-                if (Pos(DecimalSeparator, s) = 0) then
+                if (Pos(FormatSettings.DecimalSeparator, s) = 0) then
                    if (Length(s) < TAdrockCalcEdit( RealctlParent ).MaxLength) then
                       S := S+Key;
             end
@@ -1570,7 +1570,7 @@ begin
           else if (S= '-0') then
             S := '-'+Key
           else
-           if (Pos(DecimalSeparator, s) > 0) then
+           if (Pos(FormatSettings.DecimalSeparator, s) > 0) then
              begin
               if (TAdrockCalcEdit( RealctlParent ).WillMaxDecimalsBeExceeded(s) = TRUE) then
                 begin
@@ -1717,7 +1717,7 @@ procedure TAdrockCalcEditCalculator.SpeedButton19Click(Sender: TObject);
 Var
   Key : Char;
 begin
-  Key := DecimalSeparator;
+  Key := FormatSettings.DecimalSeparator;
   FormKeyPress(Sender, Key);
 end;
 
@@ -2135,7 +2135,7 @@ begin
   _Glyph               := bgCalculator;
   SetupEditButtonBitmap;
 
-  fCustomDisplayFormat  := '#,##0'+DecimalSeparator+'00;(#,##0'+DecimalSeparator+'00)';
+  fCustomDisplayFormat  := '#,##0'+FormatSettings.DecimalSeparator+'00;(#,##0'+FormatSettings.DecimalSeparator+'00)';
   Text := '';
 
   Inherited OnButtonClick := fButtonOnClick;
@@ -2172,7 +2172,7 @@ Function TAdrockCalcEdit.WillMaxDecimalsBeExceeded(fText : String) : Boolean;
 Var
   DotPos     : Byte;
 begin
-  DotPos := Pos(DecimalSeparator, fText);
+  DotPos := Pos(FormatSettings.DecimalSeparator, fText);
   if (DotPos >0) then
     begin
       if ((Length(fText) - DotPos) >= fMaxDecimals) then
@@ -2194,7 +2194,7 @@ Var
   TextBeforeKeyStroke : String;
 begin
   TextBeforeKeyStroke := Text;
-  DotPos := Pos(DecimalSeparator, TextBeforeKeyStroke);
+  DotPos := Pos(FormatSettings.DecimalSeparator, TextBeforeKeyStroke);
   inherited KeyPress(Key);
   if (AllowEditing  = FALSE) then
      begin
@@ -2212,11 +2212,11 @@ begin
   else
    begin
      { Is key a valid key when the calculator is not visible }
-     if (Key in [#27,'0'..'9','-',DecimalSeparator, #8]) then
+     if CharInSet(Key, [#27,'0'..'9','-',FormatSettings.DecimalSeparator, #8]) then
       begin
         MinusPos := Pos('-', TextBeforeKeyStroke);
         { Only allow a maximum of 1 . }
-        if (Key = DecimalSeparator) then
+        if (Key = FormatSettings.DecimalSeparator) then
           begin
             if (MaxDecimals = 0) then
               Key := #0

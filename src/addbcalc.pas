@@ -219,7 +219,7 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, StdCtrls, Buttons, Dialogs, DB, DBTables, DbCtrls,
+  Forms, StdCtrls, Buttons, Dialogs, DB, {DBTables,} DbCtrls,
   AdCalc;
 
 type

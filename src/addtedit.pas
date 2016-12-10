@@ -1044,14 +1044,14 @@ end;
 procedure TAdrockDateTimeEditSampleForm.Year2000CutoffKeyPress(
   Sender: TObject; var Key: Char);
 begin
-  if not (Key in ['0'..'9', #8]) then
+  if not CharInSet(Key, ['0'..'9', #8]) then
     Key := #0;
 end;
 
 procedure TAdrockDateTimeEditSampleForm.SpinEditButtonBitmapWidthKeyPress(
   Sender: TObject; var Key: Char);
 begin
-  if not (Key in ['0'..'9', #8]) then
+  if not CharInSet(Key, ['0'..'9', #8]) then
     Key := #0;
 end;
 

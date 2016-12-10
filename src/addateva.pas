@@ -432,7 +432,7 @@ begin
   M := 0;
   D := 0;
   Result := False;
-  DateOrder := GetDateOrder(ShortDateFormat);
+  DateOrder := GetDateOrder(FormatSettings.ShortDateFormat);
 
   NextOrprev := FALSE;
   WordMonth      := FALSE;
@@ -458,7 +458,7 @@ begin
 
   Valid := TRUE;
   { Attempt to find a valid date using the standard Delphi method }
-  if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, DateSeparator) and ScanNumber(S, Pos, N2)) then
+  if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, FormatSettings.DateSeparator) and ScanNumber(S, Pos, N2)) then
     Valid := FALSE;
 
   { Check to see if a valid date can be found by searching for a day, then a a space, and then
@@ -480,7 +480,7 @@ begin
   if (Valid = FALSE) then
     begin
        Pos := StartPos;
-       if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, DateSeparator) and ScanMonthWord(S, Pos, N2)) then
+       if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, FormatSettings.DateSeparator) and ScanMonthWord(S, Pos, N2)) then
          Valid := FALSE
        else
         begin
@@ -508,7 +508,7 @@ begin
   if (Valid = FALSE) then
     begin
        Pos := StartPos;
-       if not (ScanMonthWord(S, Pos, N1) and ScanChar(S, Pos, DateSeparator) and ScanNumber(S, Pos, N2)) then
+       if not (ScanMonthWord(S, Pos, N1) and ScanChar(S, Pos, FormatSettings.DateSeparator) and ScanNumber(S, Pos, N2)) then
           Valid := FALSE
        else
          begin
@@ -874,7 +874,7 @@ begin
 
   if (WordMonth = TRUE) then
    begin
-      ScanCommasAndBlanksAndExtra(S, Pos, DateSeparator);
+      ScanCommasAndBlanksAndExtra(S, Pos, FormatSettings.DateSeparator);
 
       if (NextOrprev = TRUE) then
         begin
@@ -928,7 +928,7 @@ begin
    end
   else
     begin
-     if (ScanChar(S, Pos, DateSeparator)) then
+     if (ScanChar(S, Pos, FormatSettings.DateSeparator)) then
      begin
        if not ScanNumber(S, Pos, N3) then Exit;
        if (n1 > 31) and (DateOrder <> doYMD) then
@@ -1023,12 +1023,12 @@ begin
   EndPosition     := 1;
 
   Ch := DateString[CurrentPosition];
-  Skipping := (ch in [' ']);
+  Skipping := CharInSet(ch, [' ']);
   While (CurrentPosition <= MaxLen) do
    begin
      Ch := DateString[CurrentPosition];
      { If we are skipping over spaces then handle it here }
-     if (Skipping) and (ch in [' ']) then
+     if (Skipping) and CharInSet(ch, [' ']) then
        begin
          Inc(CurrentPosition);
          Inc(StartPosition);
@@ -1038,7 +1038,7 @@ begin
     Skipping := FALSE; 
     Inc(CurrentPosition);
     { We only get here when skipping = false }
-    if (Ch in [' ', ',','/','-',DateSeparator]) then
+    if CharInSet(Ch, [' ', ',','/','-',FormatSettings.DateSeparator]) then
       begin
          { We have a delimiter so add the item to the StringList }
          fDateTokens.Add(Copy(DateString, StartPosition, EndPosition-StartPosition));
@@ -1209,16 +1209,16 @@ begin
     exit;
   if not ScanNumber(S, Pos, Hour) then Exit;
   Min := 0;
-  if ScanChar(S, Pos, TimeSeparator) then
+  if ScanChar(S, Pos, FormatSettings.TimeSeparator) then
     if not ScanNumber(S, Pos, Min) then Exit;
   Sec := 0;
-  if ScanChar(S, Pos, TimeSeparator) then
+  if ScanChar(S, Pos, FormatSettings.TimeSeparator) then
     if not ScanNumber(S, Pos, Sec) then Exit;
   BaseHour := -1;
-  if ScanString(S, Pos, TimeAMString) or ScanString(S, Pos, 'AM') then
+  if ScanString(S, Pos, FormatSettings.TimeAMString) or ScanString(S, Pos, 'AM') then
     BaseHour := 0
   else
-    if ScanString(S, Pos, TimePMString) or ScanString(S, Pos, 'PM') then
+    if ScanString(S, Pos, FormatSettings.TimePMString) or ScanString(S, Pos, 'PM') then
       BaseHour := 12;
   if BaseHour >= 0 then
   begin
@@ -1309,7 +1309,7 @@ begin
     begin
       Result := TRUE;
       if (CheckTimeSeparator) then
-         if (Pos(TimeSeparator, Word) = 0) then
+         if (Pos(FormatSettings.TimeSeparator, Word) = 0) then
           Result := FALSE;
     end;
 end;

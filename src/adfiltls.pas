@@ -223,6 +223,8 @@ http://www.Adrock.com
 {**************************************************************************}
 interface
 
+{$WARN UNIT_PLATFORM OFF}
+
 uses
   WinTypes, WinProcs, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   filectrl, AdWFoc;

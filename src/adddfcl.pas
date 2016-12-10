@@ -462,8 +462,8 @@ Var
 begin
   Value := fStyle;
   case Value of
-    tdsWindowsShortTime   : Result := ShortTimeFormat;
-    tdsWindowsLongTime    : Result := LongTimeFormat;
+    tdsWindowsShortTime   : Result := FormatSettings.ShortTimeFormat;
+    tdsWindowsLongTime    : Result := FormatSettings.LongTimeFormat;
     tdsHMAMPM             : Result := 'HH:MM AM/PM';
     tdsHM12               : Result := 'HH:MM';
     tdsHM24               : Result := 'HH:MM';

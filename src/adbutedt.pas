@@ -243,15 +243,17 @@ type
   {************************************************************************************************************************}
   TAdrockButtonEditButton = class(TSpeedButton)
   protected
-  Constructor Create(AOwner : TComponent); override;
-  Procedure   Loaded; override;
+    procedure   Loaded; override;
+  public
+    constructor Create(AOwner : TComponent); override;
   end;
 
 
   TAdrockSpinEditButton = class(TAdrockSpinButton)
   protected
-  Constructor Create(AOwner : TComponent); override;
-  Procedure   Loaded; override;
+    procedure   Loaded; override;
+  public
+    constructor Create(AOwner : TComponent); override;
   end;
 
   TAdrockButtonEditBitmapStyle  = (bsStandard, bsEllipse, bsCustom);

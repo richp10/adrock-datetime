@@ -584,6 +584,7 @@ end;
 
 Function TAdrockCalendarSettingsSampleForm.GetColorByIndex(Index : integer) : TColor;
 begin
+  Result := clBlack;
   case Index of
      0 : { Back             }
          Result := AdrockCalendarSettingsComponent1.CalendarSettings.Colors.Back;
@@ -795,7 +796,7 @@ end;
 procedure TAdrockCalendarSettingsSampleForm.BevelWidthKeyPress(
   Sender: TObject; var Key: Char);
 begin
- if not (Key in ['0'..'9', #8])  then
+ if not CharInSet(Key, ['0'..'9', #8])  then
    Key := #0;
 end;
 

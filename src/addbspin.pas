@@ -219,7 +219,7 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, AdSpinEd, DBCtrls, DBTables, DB;
+  Forms, Dialogs, StdCtrls, AdSpinEd, DBCtrls, {DBTables,} DB;
 
 type
   TAdrockDBSpinEdit = class(TAdrockSpinEdit)

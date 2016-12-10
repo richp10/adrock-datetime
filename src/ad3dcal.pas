@@ -1527,7 +1527,7 @@ begin
   fMonthComboBox.Items.Clear;
   fMonthComboBox.Items.BeginUpdate;
   for Pos := 1 to 12 do
-    fMonthComboBox.Items.Add(LongMonthNames[Pos]);
+    fMonthComboBox.Items.Add(FormatSettings.LongMonthNames[Pos]);
   fMonthComboBox.Items.EndUpdate;
 
   fYearComboBox.Items.Clear;
@@ -1643,7 +1643,7 @@ begin
   { Should we show the Combo Box's? }
   if (fShowOnCalendar <> scLabels) then
    exit;
-  fMonthLabel := LongMonthNames[fCurrentMonth];
+  fMonthLabel := FormatSettings.LongMonthNames[fCurrentMonth];
   fMonthLabelLeft := ReturnOutsidecellsRect.Left;
   fMonthLabelTop := ReturnOffsetToCombosTop;
 
@@ -2358,7 +2358,7 @@ begin
 
 
         TempRect := ReturnDayHeaderCellRect(i);
-        Draw3dText(fText3dWeekDayHeader, Copy(LongDayNames[i+1],0,fWeekDayHeaderDisplayLen), TempRect,textDrawFlag);
+        Draw3dText(fText3dWeekDayHeader, Copy(FormatSettings.LongDayNames[i+1],0,fWeekDayHeaderDisplayLen), TempRect,textDrawFlag);
      end
   else { The calendar starts on Monday }
     for i := 0 to 6 do
@@ -2394,7 +2394,7 @@ begin
           DayPos := 0;
 
         TempRect := ReturnDayHeaderCellRect(i);
-        Draw3dText(fText3dWeekDayHeader, Copy(LongDayNames[DayPos+1],0,fWeekDayHeaderDisplayLen), TempRect, textDrawFlag);
+        Draw3dText(fText3dWeekDayHeader, Copy(FormatSettings.LongDayNames[DayPos+1],0,fWeekDayHeaderDisplayLen), TempRect, textDrawFlag);
      end;
      { Draw a line below the days }
 {     with Canvas do
@@ -2642,7 +2642,7 @@ begin
   { Only updatenthe labels if something has changed }
   if (HasMonthChanged = TRUE) or (FMonthLabel = '') then
    begin
-     fMonthLabel := LongMonthNames[fCurrentMonth];
+     fMonthLabel := FormatSettings.LongMonthNames[fCurrentMonth];
      DrawMonthLabel;
    end;
 
@@ -2754,7 +2754,7 @@ end;
 {***************************************************************************}
 Function TAdrock3dCalendar.DateString : String;
 begin
-  Result := FormatDateTime(LongDateFormat, Date);
+  Result := FormatDateTime(FormatSettings.LongDateFormat, Date);
 end;
 
 {***************************************************************************}
@@ -3985,7 +3985,7 @@ begin
   Canvas.FillRect(TempRect);
   TempRect := Rect(fMonthLabelLeft, fMonthLabelTop, fMonthLabelLeft+Canvas.TextWidth(fMonthLabel),
      fMonthLabelTop+fMonthLabelHeight);
-  Draw3dText(fText3dLabels, LongMonthNames[Month], TempRect, DT_LEFT or DT_VCENTER);
+  Draw3dText(fText3dLabels, FormatSettings.LongMonthNames[Month], TempRect, DT_LEFT or DT_VCENTER);
 end;
 
 procedure TAdrock3dCalendar.DrawYearLabel;

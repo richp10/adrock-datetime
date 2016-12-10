@@ -221,7 +221,7 @@ interface
 
 Uses
   SysUtils, WinProcs, WinTypes, Messages, Classes, Controls, Forms,
-  Graphics, Menus, StdCtrls, ExtCtrls, DB, DBTables, Buttons,
+  Graphics, Menus, StdCtrls, ExtCtrls, DB, {DBTables,} Buttons,
   
    dbCtrls, { Declares the TFieldDataLink }
 

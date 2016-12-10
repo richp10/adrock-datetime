@@ -238,7 +238,7 @@ uses
   AdDateDt,
   adDateVA,
 
-  DB, DBTables;
+  DB{, DBTables};
 
   {$ifdef UNREGISTERED}
   {$DEFINE ADROCK_NAG_SCREEN_TYPE}
@@ -606,7 +606,7 @@ end;
 
 procedure TAdrockDBDateTimeEdit.KeyPress(var Key: Char);
 begin
-  if ((Key in [#32..#255]) and (FDataLink.Field <> nil) and not FDataLink.Field.IsValidChar(Key)) or
+  if (CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and not FDataLink.Field.IsValidChar(Key)) or
    ((FDataLink.Active = FALSE) or (FDataLink.ReadOnly = TRUE)) then
   begin
     MessageBeep(0);

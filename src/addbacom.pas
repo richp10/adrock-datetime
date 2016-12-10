@@ -224,7 +224,7 @@ uses
   WinTypes, WinProcs,
 {$endif}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, DsgnIntf, AdDBComb, AdString, dbctrls;
+  StdCtrls, DesignIntf,{DsgnIntf,} AdDBComb, AdString, dbctrls;
 
 type
   TAdrockDBAutoCompletionComboBoxOption  = (cboItemMustExist, cboAllowBlank);

@@ -224,7 +224,7 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs{, DesignIntf}{dsgnintf};
+  Forms, Dialogs, DesignIntf{dsgnintf};
 
 type
   TAdrockCustomCaptionAlignmentStyle = (

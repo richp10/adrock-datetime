@@ -224,7 +224,7 @@ uses
   WinTypes, WinProcs, Menus,
   {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Grids, DsgnIntf, TypInfo,
+  StdCtrls, Grids, DesignIntf,{DsgnIntf,} TypInfo,
   AdWFOC;
 
 type

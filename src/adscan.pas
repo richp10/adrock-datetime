@@ -332,7 +332,7 @@ begin
   if (S = '') then
     exit;
   I := Pos;
-  while (I <= Length(S)) and (S[I] in [' ', ',', ExtraChar]) do
+  while (I <= Length(S)) and CharInSet(S[I], [' ', ',', ExtraChar]) do
     Inc(I);
   Pos := I;
 end;
@@ -368,7 +368,7 @@ begin
 
   fSubString := '';
   i := Pos;
-  while (I <= Length(S)) and not (S[i] in [' ',',','-',dateSeparator]) do
+  while (I <= Length(S)) and not CharInSet(S[i], [' ',',','-',FormatSettings.dateSeparator]) do
   begin
     fSubString := fSubString + Upcase(S[I]);
     Inc(I);
@@ -400,7 +400,7 @@ begin
   ScanCommasAndBlanksAndExtra(S, Pos,#0);
   I := Pos;
   N := 0;
-  while (I <= Length(S)) and (S[I] in ['0'..'9']) and (N < 1000) do
+  while (I <= Length(S)) and CharInSet(S[I], ['0'..'9']) and (N < 1000) do
   begin
     N := N * 10 + (Ord(S[I]) - Ord('0'));
     Inc(I);
@@ -433,7 +433,7 @@ begin
   ScanCommasAndBlanksAndExtra(S, Pos,#0);
   I := Pos;
   N := 0;
-  while (I <= Length(S)) and (S[I] in ['0'..'9']) and (N < 1000) do
+  while (I <= Length(S)) and CharInSet(S[I], ['0'..'9']) and (N < 1000) do
   begin
     N := N * 10 + (Ord(S[I]) - Ord('0'));
     Inc(I);
@@ -470,9 +470,9 @@ begin
   I := Pos;
   N := 0;
   Dot := FALSE;
-  while (I <= Length(S)) and (S[I] in ['0'..'9', DecimalSeparator]) and (N < 1000) do
+  while (I <= Length(S)) and CharInSet(S[I], ['0'..'9', FormatSettings.DecimalSeparator]) and (N < 1000) do
   begin
-    if (S[i] = DecimalSeparator) then
+    if (S[i] = FormatSettings.DecimalSeparator) then
       begin
         Dot := TRUE;
       end
@@ -508,7 +508,7 @@ begin
   ScanCommasAndBlanksAndExtra(S, Pos,#0);
   I := Pos;
   fWeekDay := '';
-  while (I <= Length(S)) and not (S[i] in [' ', ',','-','/',DateSeparator]) do
+  while (I <= Length(S)) and not CharInSet(S[i], [' ', ',','-','/',FormatSettings.DateSeparator]) do
   begin
     fWeekDay := fWeekDay + Upcase(S[I]);
     Inc(I);
@@ -518,7 +518,7 @@ begin
     { Scan the fmonth variable for a valid month name... }
     Number := 0;
     for fPos := 1 to 7 do
-      if (fWeekDay = uppercase(LongDayNames[fPos])) then
+      if (fWeekDay = uppercase(FormatSettings.LongDayNames[fPos])) then
         begin
           Number := fPos;
           Result := True;
@@ -526,7 +526,7 @@ begin
           exit;
         end;
     for fPos := 1 to 7 do
-      if (fWeekDay = uppercase(ShortDayNames[fPos])) then
+      if (fWeekDay = uppercase(FormatSettings.ShortDayNames[fPos])) then
         begin
           Number := fPos;
           Result := True;
@@ -553,7 +553,7 @@ begin
   ScanCommasAndBlanksAndExtra(S, Pos,#0);
   I := Pos;
   fMonth := '';
-  while (I <= Length(S)) and not (S[i] in [' ', ',','-','/',DateSeparator]) do
+  while (I <= Length(S)) and not CharInSet(S[i], [' ', ',','-','/',FormatSettings.DateSeparator]) do
   begin
     fMonth := fMonth + Upcase(S[I]);
     Inc(I);
@@ -563,7 +563,7 @@ begin
     { Scan the fmonth variable for a valid month name... }
     Number := 0;
     for fPos := 1 to 12 do
-      if (fMonth = uppercase(LongMonthNames[fPos])) then
+      if (fMonth = uppercase(FormatSettings.LongMonthNames[fPos])) then
         begin
           Number := fPos;
           Result := True;
@@ -571,7 +571,7 @@ begin
           exit;
         end;
     for fPos := 1 to 12 do
-      if (fMonth = uppercase(ShortMonthNames[fPos])) then
+      if (fMonth = uppercase(FormatSettings.ShortMonthNames[fPos])) then
         begin
           Number := fPos;
           Result := True;
@@ -597,7 +597,7 @@ begin
   ScanCommasAndBlanksAndExtra(S, Pos,#0);
   I := Pos;
   fMonth := '';
-  while (I <= Length(S)) and not (S[i] in [' ']) do
+  while (I <= Length(S)) and not CharInSet(S[i], [' ']) do
   begin
     fMonth := fMonth + Upcase(S[I]);
     Inc(I);
@@ -630,7 +630,7 @@ begin
   if (S = '') then
     exit;
   ScanBlanks(S, Pos);
-  if (Pos <= Length(S)) and (S[Pos] in ['-','/',Ch]) then
+  if (Pos <= Length(S)) and CharInSet(S[Pos], ['-','/',Ch]) then
   begin
     Inc(Pos);
     Result := True;

@@ -240,11 +240,11 @@ type
     procedure BtnMouseDown (Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure SetFocusBtn (Btn: TAdrockTimerSpeedButton);
-    procedure AdjustSize (var W: Integer; var H: Integer);
     procedure WMSize(var Message: TWMSize);  message WM_SIZE;
     procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
     procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
+    procedure InternalAdjustSize (var W: Integer; var H: Integer);
   protected
     procedure Loaded; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -391,7 +391,7 @@ begin
   Result.Parent := Self;
 end;
 
-procedure TAdrockSpinButton.AdjustSize (var W: Integer; var H: Integer);
+procedure TAdrockSpinButton.InternalAdjustSize (var W: Integer; var H: Integer);
 begin
   if (FUpButton = nil) or (csLoading in ComponentState) then Exit;
   if W < 15 then W := 15;
@@ -405,7 +405,7 @@ var
 begin
   W := AWidth;
   H := AHeight;
-  AdjustSize (W, H);
+  InternalAdjustSize (W, H);
   inherited SetBounds (ALeft, ATop, W, H);
 end;
 
@@ -418,7 +418,7 @@ begin
   { check for minimum size }
   W := Width;
   H := Height;
-  AdjustSize (W, H);
+  InternalAdjustSize (W, H);
   if (W <> Width) or (H <> Height) then
     inherited SetBounds(Left, Top, W, H);
   Message.Result := 0;
@@ -504,7 +504,7 @@ begin
   inherited Loaded;
   W := Width;
   H := Height;
-  AdjustSize (W, H);
+  InternalAdjustSize (W, H);
   if (W <> Width) or (H <> Height) then
     inherited SetBounds (Left, Top, W, H);
 end;
@@ -587,7 +587,7 @@ end;
 
 function TAdrockSpinEdit.IsValidChar(Key: Char): Boolean;
 begin
-  Result := (Key in [DecimalSeparator, '+', '-', '0'..'9']) or
+  Result := CharInSet(Key, [FormatSettings.DecimalSeparator, '+', '-', '0'..'9']) or
     ((Key < #32) and (Key <> Chr(VK_RETURN)));
   if not FEditorEnabled and Result and ((Key >= #32) or
       (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then

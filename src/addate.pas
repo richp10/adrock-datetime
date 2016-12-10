@@ -1086,13 +1086,13 @@ begin
   result := FALSE;
   Monthname := Uppercase(MonthName);
   for XPos := 1 to 12 do
-    if (MonthName = uppercase(ShortMonthNames[XPos])) then
+    if (MonthName = uppercase(FormatSettings.ShortMonthNames[XPos])) then
       begin
         result := TRUE;
         exit;
       end;
   for XPos := 1 to 12 do
-    if (MonthName = uppercase(LongMonthNames[XPos])) then
+    if (MonthName = uppercase(FormatSettings.LongMonthNames[XPos])) then
       begin
         result := TRUE;
         exit;
@@ -1106,13 +1106,13 @@ begin
   result := FALSE;
   DayName := Uppercase(DayName);
   for XPos := 1 to 7 do
-    if (DayName = uppercase(ShortDayNames[XPos])) then
+    if (DayName = uppercase(FormatSettings.ShortDayNames[XPos])) then
       begin
         result := TRUE;
         exit;
       end;
   for XPos := 1 to 12 do
-    if (DayName = uppercase(LongDayNames[XPos])) then
+    if (DayName = uppercase(FormatSettings.LongDayNames[XPos])) then
       begin
         result := TRUE;
         exit;
@@ -1443,7 +1443,7 @@ end;
 {***************************************************************************}
 Function  TAdrockDates.ReturnWeekDayName(StartingDayOfWeek, WeekDay : Integer) : String;
 begin
-   result := LongDayNames[ReturnDelphiDayOfWeek(StartingDayOfWeek, WeekDay)];
+   result := FormatSettings.LongDayNames[ReturnDelphiDayOfWeek(StartingDayOfWeek, WeekDay)];
 end;
 
 {***************************************************************************}
@@ -1952,7 +1952,8 @@ var
   I: Integer;
 begin
   I := Pos;
-  while (I <= Length(S)) and (S[I] in [' ', ',']) do
+
+  while (I <= Length(S)) and CharInSet(S[I], [' ', ',']) do
     Inc(I);
   Pos := I;
 end;
@@ -1984,7 +1985,7 @@ begin
   ScanBlanks(S, Pos);
   I := Pos;
   N := 0;
-  while (I <= Length(S)) and (S[I] in ['0'..'9']) and (N < 1000) do
+  while (I <= Length(S)) and CharInSet(S[I], ['0'..'9']) and (N < 1000) do
   begin
     N := N * 10 + (Ord(S[I]) - Ord('0'));
     Inc(I);
@@ -2011,7 +2012,7 @@ begin
   I := Pos;
   fMonth := '';
 { while (I <= Length(S)) and (S[i] <> ' ') and (S[i] <> DateSeparator) do}
-  while (I <= Length(S)) and not (S[i] in [' ', ',',DateSeparator]) do
+  while (I <= Length(S)) and not CharInSet(S[i], [' ', ',', FormatSettings.DateSeparator]) do
   begin
     fMonth := fMonth + Upcase(S[I]);
     Inc(I);
@@ -2021,7 +2022,7 @@ begin
     { Scan the fmonth variable for a valid month name... }
     Number := 0;
     for fPos := 1 to 12 do
-      if (fMonth = uppercase(Copy(LongMonthNames[fPos],1,Length(fMonth))) ) then
+      if (fMonth = uppercase(Copy(FormatSettings.LongMonthNames[fPos],1,Length(fMonth))) ) then
         begin
           Number := fPos;
           Result := True;
@@ -2074,7 +2075,7 @@ end;
 
 Function  TAdrockDates.ReturnDateOrder : TDateOrder;
 begin
-  Result := GetDateOrder(ShortDateFormat);
+  Result := GetDateOrder(FormatSettings.ShortDateFormat);
 end;
 
 {****************************************************************************}
@@ -2132,11 +2133,11 @@ begin
   M := 0;
   D := 0;
   Result := False;
-  DateOrder := GetDateOrder(ShortDateFormat);
+  DateOrder := GetDateOrder(FormatSettings.ShortDateFormat);
 
-  if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, DateSeparator) and
+  if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, FormatSettings.DateSeparator) and
     ScanNumber(S, Pos, N2)) then Exit;
-  if ScanChar(S, Pos, DateSeparator) then
+  if ScanChar(S, Pos, FormatSettings.DateSeparator) then
   begin
     if not ScanNumber(S, Pos, N3) then Exit;
     case DateOrder of
@@ -2194,7 +2195,7 @@ begin
   M := 0;
   D := 0;
   Result := False;
-  DateOrder := GetDateOrder(ShortDateFormat);
+  DateOrder := GetDateOrder(FormatSettings.ShortDateFormat);
 
   StartPos := Pos;
   WordMonth := FALSE;
@@ -2202,7 +2203,7 @@ begin
   Valid := TRUE;
 
   { Attempt to find a valid date using the standard Delphi method }
-  if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, DateSeparator) and ScanNumber(S, Pos, N2)) then
+  if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, FormatSettings.DateSeparator) and ScanNumber(S, Pos, N2)) then
      Valid := FALSE;
 
   { Check to see if a valid date can be found by searching for a day, then a a space, and then
@@ -2224,7 +2225,7 @@ begin
   if (Valid = FALSE) then
     begin
        Pos := StartPos;
-       if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, DateSeparator) and ScanMonthWord(S, Pos, N2)) then
+       if not (ScanNumber(S, Pos, N1) and ScanChar(S, Pos, FormatSettings.DateSeparator) and ScanMonthWord(S, Pos, N2)) then
          Valid := FALSE
        else
         begin
@@ -2252,7 +2253,7 @@ begin
   if (Valid = FALSE) then
     begin
        Pos := StartPos;
-       if not (ScanMonthWord(S, Pos, N1) and ScanChar(S, Pos, DateSeparator) and ScanNumber(S, Pos, N2)) then
+       if not (ScanMonthWord(S, Pos, N1) and ScanChar(S, Pos, FormatSettings.DateSeparator) and ScanNumber(S, Pos, N2)) then
           Valid := FALSE
        else
          begin
@@ -2318,7 +2319,7 @@ begin
    end
   else
     begin
-     if (ScanChar(S, Pos, DateSeparator)) then
+     if (ScanChar(S, Pos, FormatSettings.DateSeparator)) then
      begin
        if not ScanNumber(S, Pos, N3) then Exit;
        case DateOrder of
@@ -2424,7 +2425,7 @@ Var
   ResultMask  : String;
   NewMask     : String;
 begin
-  NewMask := UpperCase(ShortDateFormat);
+  NewMask := UpperCase(FormatSettings.ShortDateFormat);
   FoundPos := Pos('YYYY', NewMask);
   if (FoundPos = 0) then
   begin
@@ -2601,7 +2602,7 @@ begin
                 Valid := ScanCharNoSpace(DateStr, Offset, ' ');
                 if (Valid = FALSE) then
                   { The scan for the space failed, so check for the date separator... }
-                Valid := ScanCharNoSpace(DateStr, Offset, DateSeparator);
+                Valid := ScanCharNoSpace(DateStr, Offset, FormatSettings.DateSeparator);
               end;
         2   : case fDateOrder of
                 doMDY, doMMMDY   : { Scan for the Day of the date... }
@@ -4082,7 +4083,7 @@ begin
   try
     i:=1;
     {if there is DOW ignore it}
-    while (i<=Length(MailDateTimeString)) and (not (MailDateTimeString[i] in Digits)) do
+    while (i<=Length(MailDateTimeString)) and (not CharInSet(MailDateTimeString[i], Digits)) do
       Inc(i);
     if i=Length(MailDateTimeString) then
       Exit;
@@ -4104,7 +4105,7 @@ begin
     MailDateTimeString:=TrimString(MailDateTimeString);
     Month:=1;
     repeat
-      i:=Pos(Months[Month],MailDateTimeString);
+      i := Pos(Months[Month], MailDateTimeString);
       inc(Month);
     until (Month=13) or (i>0);
     if i=0 then
@@ -4114,7 +4115,7 @@ begin
     {Pick up the year}
     MailDateTimeString:=TrimString(MailDateTimeString);
     i:=1;
-    while (i<=Length(MailDateTimeString)) and (not (MailDateTimeString[i] in Digits)) do
+    while (i<=Length(MailDateTimeString)) and (not CharInSet(MailDateTimeString[i], Digits)) do
       Inc(i);
     if i=Length(MailDateTimeString) then
       Exit;

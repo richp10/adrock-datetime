@@ -673,7 +673,7 @@ end;
 
 function TAdrockSpinEditCustom.IsValidChar(Key: Char): Boolean;
 begin
-  Result := (Key in [DecimalSeparator, '+', '-', '0'..'9']) or
+  Result := CharInSet(Key, [FormatSettings.DecimalSeparator, '+', '-', '0'..'9']) or
     ((Key < #32) and (Key <> Chr(VK_RETURN)));
   if not FEditorEnabled and Result and ((Key >= #32) or
       (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then

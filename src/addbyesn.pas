@@ -222,7 +222,7 @@ uses
   {Delphi 3.0 Requirement for TFieldDataLink }
   dbCtrls,
 
-  StdCtrls, AdYesNo, DB, DBTables;
+  StdCtrls, AdYesNo, DB{, DBTables};
 
 type
   TAdrockDBYesNoComboBox = class(TAdrockYesNoComboBox)

@@ -900,8 +900,8 @@ begin
                                    (fDateInputStyle = disWeekDayMDY) or (fDateInputStyle = disWeekDayYMD) then
                                       Result := 'DDD '+Result;
                                end;
-       ddsWindowsShortDate   : Result := ShortDateFormat;
-       ddsWindowsLongDate    : Result := LongDateFormat;
+       ddsWindowsShortDate   : Result := FormatSettings.ShortDateFormat;
+       ddsWindowsLongDate    : Result := FormatSettings.LongDateFormat;
        ddsDDMMYYYY           : Result := 'DD/MM/YYYY';
        ddsMMDDYYYY           : Result := 'MM/DD/YYYY';
        ddsYYYYMMDD           : Result := 'YYYY/MM/DD';
@@ -929,8 +929,8 @@ begin
                                 (fDateInputStyle = disWeekDayMDY) or (fDateInputStyle = disWeekDayYMD) then
                                    Result := 'DDD '+Result;
                             end;
-    ddsWindowsShortDate   : Result := ShortDateFormat;
-    ddsWindowsLongDate    : Result := LongDateFormat;
+    ddsWindowsShortDate   : Result := FormatSettings.ShortDateFormat;
+    ddsWindowsLongDate    : Result := FormatSettings.LongDateFormat;
     ddsDDMMYYYY           : Result := 'DD/MM/YYYY';
     ddsMMDDYYYY           : Result := 'MM/DD/YYYY';
     ddsYYYYMMDD           : Result := 'YYYY/MM/DD';
@@ -957,8 +957,8 @@ begin
        tisHM24               : Value := tdsHM24;
      end;
   case Value of
-    tdsWindowsShortTime   : Result := ShortTimeFormat;
-    tdsWindowsLongTime    : Result := LongTimeFormat;
+    tdsWindowsShortTime   : Result := FormatSettings.ShortTimeFormat;
+    tdsWindowsLongTime    : Result := FormatSettings.LongTimeFormat;
     tdsHMAMPM             : Result := 'HH:MM AMPM';
     tdsHM12               : Result := 'HH:MM';
     tdsHM24               : Result := 'HH:MM';
@@ -1092,7 +1092,7 @@ Var
   fDateFormat            : String;
   fBadDateRangeMessage   : String;
 begin
-  fDateFormat := ReturnFormattedEditMask(ShortDateFormat);
+  fDateFormat := ReturnFormattedEditMask(FormatSettings.ShortDateFormat);
   fMinDateS := FormatDate(fDateFormat, FDateMin.DateTime);
   fMaxDates := FormatDate(fDateFormat, FDateMax.DateTime);
   NilDate := #13+#13+'The date can also be left blank.';
@@ -1165,12 +1165,12 @@ begin
         end;
 
        case fActualDateInputStyle of
-         disDMY : DateString := Format('%s%s%s%s%s', [FormatDateNumber(2, fDate.Day),   DateSeparator,
-                                   FormatDateNumber(2, fDate.Month), DateSeparator, FormatDateNumber(4, fDate.Year)]);
-         disMdY : DateString := Format('%s%s%s%s%s', [FormatDateNumber(2, fDate.Month), DateSeparator,
-                                   FormatDateNumber(2, fDate.Day), DateSeparator, FormatDateNumber(4, FDate.Year)]);
-         disYmd : DateString := Format('%s%s%s%s%s', [FormatDateNumber(4, fDate.Year),  DateSeparator,
-                                   FormatDateNumber(2, fDate.Month), DateSeparator, FormatDateNumber(2, fDate.Day)]);
+         disDMY : DateString := Format('%s%s%s%s%s', [FormatDateNumber(2, fDate.Day),   FormatSettings.DateSeparator,
+                                   FormatDateNumber(2, fDate.Month), FormatSettings.DateSeparator, FormatDateNumber(4, fDate.Year)]);
+         disMdY : DateString := Format('%s%s%s%s%s', [FormatDateNumber(2, fDate.Month), FormatSettings.DateSeparator,
+                                   FormatDateNumber(2, fDate.Day), FormatSettings.DateSeparator, FormatDateNumber(4, FDate.Year)]);
+         disYmd : DateString := Format('%s%s%s%s%s', [FormatDateNumber(4, fDate.Year),  FormatSettings.DateSeparator,
+                                   FormatDateNumber(2, fDate.Month), FormatSettings.DateSeparator, FormatDateNumber(2, fDate.Day)]);
        END;
        if (Mode = TRUE) then
          Result  := LoadStr(ADDATETM_BAD_THEDATE)+' "'+DateString+'"'+LoadStr(ADDATETM_BAD_ISNOTVALID)+', '+ErrorText
@@ -1217,13 +1217,13 @@ begin
 
    case fActualTimeInputStyle of
      tisHMS12, tisHM12, tisHMSAMPM, tisHMAMPM :
-         TimeString := Format('%s%s%s%s%s', [FormatDateNumber(2, fDate.Hour12), TimeSeparator,
-                                             FormatDateNumber(2, fDate.Minute), TimeSeparator,
+         TimeString := Format('%s%s%s%s%s', [FormatDateNumber(2, fDate.Hour12), FormatSettings.TimeSeparator,
+                                             FormatDateNumber(2, fDate.Minute), FormatSettings.TimeSeparator,
                                              FormatDateNumber(2, fDate.Second)]);
 
      tisHMS24, tisHM24                        :
-         TimeString := Format('%s%s%s%s%s', [FormatDateNumber(2, fDate.Hour), TimeSeparator,
-                                             FormatDateNumber(2, fDate.Minute), TimeSeparator,
+         TimeString := Format('%s%s%s%s%s', [FormatDateNumber(2, fDate.Hour), FormatSettings.TimeSeparator,
+                                             FormatDateNumber(2, fDate.Minute), FormatSettings.TimeSeparator,
                                              FormatDateNumber(2, fDate.Second)]);
 
    end;
@@ -1453,22 +1453,14 @@ end;
 Procedure TAdrockDateTimeEditCustom.SetSubFieldKeyPress(Key : Char);
 Var
   NewSubFieldValue  : String;
-  Extra             : SmallInt;
   Year              : Integer;
 begin
   if (SubFieldBeingEdited = SubFieldYear) then
     NewSubFieldValue := FormatFloat('0000', GetSubFieldValue)
   else
     NewSubFieldValue := FormatFloat('00', GetSubFieldValue);
-  Extra := 0;
-  if (SubFieldBeingEdited = subFieldYear) and (YearStyle = ys2Digit) then
-    Extra := 2;
 
   NewSubFieldValue := copy(NewSubFieldValue,2, length(NewSubFieldValue))+Key;
-{  for Pos := (GetMaxSubFieldIndex-SubFieldIndex)-1 to GetMaxSubFieldIndex-1 do
-     NewSubFieldvalue[Extra+Pos] := NewSubFieldValue[Extra+Pos+1];
-  NewSubFieldValue[Extra+GetMaxSubFieldIndex] := Key;
-}
 
   if (SubFieldBeingEdited = subFieldYear) and (YearStyle = ys2Digit) then
     begin
@@ -1775,20 +1767,20 @@ begin
          result := TRUE;
      end
    else
-       if ((fDate.Hour >= 0) and (fDate.Hour <= 23)) then
+       if (fDate.Hour <= 23) then
          result := TRUE;
 end;
 Function  TAdrockDateTimeEditCustom.IsValidMinute: Boolean;
 begin
    Result := FALSE;
-   if ((fDate.Minute >= 0) and (fDate.Minute < 60)) then
+   if fDate.Minute < 60 then
      result := TRUE;
 end;
 
 Function  TAdrockDateTimeEditCustom.IsValidSecond : Boolean;
 begin
    Result := FALSE;
-   if ((fDate.Second >= 0) and (fDate.Second < 60)) then
+   if fDate.Second < 60 then
      result := TRUE;
 end;
 
@@ -1933,8 +1925,8 @@ begin
      else
        begin
          fWeekDay := DateIsBad;
-         Inherited Text := Format('%s %02d%s%02d%s%04d', [fBadDateText, fDate.Day, DateSeparator, fDate.Month,
-              DateSeparator, fDate.Year]);
+         Inherited Text := Format('%s %02d%s%02d%s%04d', [fBadDateText, fDate.Day, FormatSettings.DateSeparator, fDate.Month,
+              FormatSettings.DateSeparator, fDate.Year]);
        end;
   finally
     RefreshHighlight;
@@ -2340,7 +2332,7 @@ begin
             Checked := Not Checked;
             exit;
          end
-        else if (Key = ' ') or (Key = DateSeparator) then
+        else if (Key = ' ') or (Key = FormatSettings.DateSeparator) then
           Begin
             SelectNextSubField;
             Key := #0;
@@ -2356,7 +2348,7 @@ begin
            Found := FALSE;
            for Pos := fWeekDay+1 to 7 do
               begin
-                CH := ShortDayNames[Pos][1];
+                CH := FormatSettings.ShortDayNames[Pos][1];
                 if (UpCase(Key) = UpCase(CH)) then
                  begin
                    SetSubFieldValue(Pos);
@@ -2369,7 +2361,7 @@ begin
            if (Found = FALSE) then
              for Pos := 1 to fWeekDay-1 do
                begin
-                 CH := ShortDayNames[Pos][1];
+                 CH := FormatSettings.ShortDayNames[Pos][1];
                 if (UpCase(Key) = UpCase(CH)) then
                    begin
                      SetSubFieldValue(Pos);
@@ -2384,7 +2376,7 @@ begin
            Found := FALSE;
            for Pos := fDate.Month+1 to 12 do
               begin
-                CH := ShortMonthNames[Pos][1];
+                CH := FormatSettings.ShortMonthNames[Pos][1];
                 if (UpCase(Key) = UpCase(CH)) then
                  begin
                    SetSubFieldValue(Pos);
@@ -2400,7 +2392,7 @@ begin
                  if (Pos < 1) or (Pos > 12) then
                  else
                    begin
-                     CH := ShortMonthNames[Pos][1];
+                     CH := FormatSettings.ShortMonthNames[Pos][1];
                      if (UpCase(Key) = UpCase(CH)) then
                        begin
                          SetSubFieldValue(Pos);
@@ -2411,7 +2403,7 @@ begin
                end;
 
            if (Found = FALSE) then
-        if (Key in ['0'..'9']) and (SubFieldBeingEdited <> SubFieldWeekDay)
+        if CharInSet(Key, ['0'..'9']) and (SubFieldBeingEdited <> SubFieldWeekDay)
            and (SubFieldBeingEdited <> SubFieldAMPM) and (IsCalendarOpen = FALSE)
              and (IsReadOnly = FALSE) then
              begin
@@ -2426,7 +2418,7 @@ begin
            Found := FALSE;
            for Pos := fDate.Month+1 to 12 do
               begin
-                CH := ShortMonthNames[Pos][1];
+                CH := FormatSettings.ShortMonthNames[Pos][1];
                 if (UpCase(Key) = UpCase(CH)) then
                  begin
                    SetSubFieldValue(Pos);
@@ -2441,7 +2433,7 @@ begin
                  if (Pos < 1) or (Pos > 12) then
                  else
                    begin
-                     CH := ShortMonthNames[Pos][1];
+                     CH := FormatSettings.ShortMonthNames[Pos][1];
                      if (UpCase(Key) = UpCase(CH)) then
                        begin
                          SetSubFieldValue(Pos);
@@ -2453,21 +2445,21 @@ begin
          end
         else if (SubFieldBeingEdited = SubFieldAMPM) and (IsReadOnly = FALSE) then
          begin
-           if (Length(TimeAMString) > 0) and (UpCase(Key) = upcase(TimeAMString[1]))
-            or ((Length(TimeAMString) = 0) and (UpCase(Key) = 'A')) then
+           if (Length(FormatSettings.TimeAMString) > 0) and (UpCase(Key) = upcase(FormatSettings.TimeAMString[1]))
+            or ((Length(FormatSettings.TimeAMString) = 0) and (UpCase(Key) = 'A')) then
              begin
                Key := #0;
                SetSubFieldValue(0);
              end;
-           if (Length(TimePMString) > 0) and (UpCase(Key) = upcase(TimePMString[1]))
-            or ((Length(TimePMString) = 0) and (UpCase(Key) = 'P')) then
+           if (Length(FormatSettings.TimePMString) > 0) and (UpCase(Key) = upcase(FormatSettings.TimePMString[1]))
+            or ((Length(FormatSettings.TimePMString) = 0) and (UpCase(Key) = 'P')) then
              begin
                Key := #0;
                SetSubFieldValue(1);
              end;
             Key := #0;
          end
-        else if (Key in ['0'..'9']) and (SubFieldBeingEdited <> SubFieldWeekDay)
+        else if CharInSet(Key, ['0'..'9']) and (SubFieldBeingEdited <> SubFieldWeekDay)
            and (SubFieldBeingEdited <> SubFieldAMPM) and (IsCalendarOpen = FALSE)
              and (IsReadOnly = FALSE) then
          begin
@@ -2483,7 +2475,7 @@ begin
         Key := #0;
   end
  else
-  if (IsReadOnly) OR (Key in [#10, #13]) then
+  if (IsReadOnly) OR CharInSet(Key, [#10, #13]) then
     Key := #0;
 end;
 
@@ -2999,7 +2991,7 @@ begin
   if (CurrentStyle = disWindows) or (CurrentStyle = disWeekDayWindows) then
     begin
       { Read the current windows date format }
-      DateFormat := Uppercase(ShortDateFormat);
+      DateFormat := Uppercase(FormatSettings.ShortDateFormat);
       { Compare the first character of the date format - simple but effective }
       if (Copy(DateFormat,1,1) = 'D') then  { This could fail for international use.... }
         Result := disDMY
@@ -3025,7 +3017,7 @@ end;
 Function  TAdrockDateTimeEditCustom.ReturnActualTimeInputStyle(CurrentStyle : TAdrockTimeInputStyle) : TAdrockTimeInputStyle;
 begin
   if (CurrentStyle = tisWindowsShort) then
-    if (Pos('S', Uppercase(ShortTimeFormat)) > 0) then
+    if (Pos('S', Uppercase(FormatSettings.ShortTimeFormat)) > 0) then
       Result := tisHMS12
     else
       Result := tisHM12
@@ -3079,7 +3071,7 @@ end;
 Function TAdrockDateTimeEditCustom.ReturnNonFocusedCustomDisplayFormat : String;
 begin
    if (CustomDisplayFormat = '') then
-     CustomDisplayFormat := ShortDateFormat+'  '+LongTimeFormat
+     CustomDisplayFormat := FormatSettings.ShortDateFormat+'  '+FormatSettings.LongTimeFormat
    else
      Result := CustomDisplayFormat;
 end;

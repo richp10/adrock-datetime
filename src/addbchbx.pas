@@ -230,7 +230,7 @@ interface
 uses
   WinTypes, WinProcs, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Extctrls, StdCtrls,
-  DB, DBTables, DBCtrls, adchkbx, Menus, AdWFoc,
+  DB, {DBTables,} DBCtrls, adchkbx, Menus, AdWFoc,
   AdDBWFOC;
 
 type

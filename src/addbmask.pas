@@ -219,7 +219,7 @@ interface
                                       
 uses
   Winprocs, WinTypes, Messages, Classes, Graphics, Controls, StdCtrls, Mask, Menus,
-  Forms, DB, DBCtrls, DBTables, adwfoc;
+  Forms, DB, DBCtrls, {DBTables,} adwfoc;
 
 type
   TAdrockDBMaskEditCustom = class(TCustomMaskEdit)

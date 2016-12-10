@@ -687,13 +687,13 @@ begin
        end;
 
        if (WeekDayLen = WdlD) then
-          fText := Copy(ShortDayNames[WeekDayID],1,1)
+          fText := Copy(FormatSettings.ShortDayNames[WeekDayID],1,1)
        else if (WeekDayLen = WdlDD) then
-          fText := Copy(ShortDayNames[WeekDayID],1,2)
+          fText := Copy(FormatSettings.ShortDayNames[WeekDayID],1,2)
        else if (WeekDayLen = WdlDDD) then
-          fText := ShortDayNames[WeekDayID]
+          fText := FormatSettings.ShortDayNames[WeekDayID]
         else
-          fText := LongDayNames[WeekDayID];
+          fText := FormatSettings.LongDayNames[WeekDayID];
         X := ((TempRect.Right-TempRect.Left) div 2) - (TextWidth(fText) div 2);
         Y := ((TempRect.Bottom-TempRect.Top) div 2) - (TextHeight(fText) div 2);
         TextRect(TempRect, TempRect.Left+X, TempRect.Top+Y, fText);

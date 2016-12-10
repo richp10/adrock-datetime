@@ -564,7 +564,7 @@ end;
 
 Function TAdrockDecodeDate.IsWhiteSpace(Ch : Char) : Boolean;
 begin
-  if (ch in [' ']) then
+  if CharInSet(ch, [' ']) then
     Result := TRUE
   else
     Result := FALSE;
@@ -572,7 +572,7 @@ end;
 
 Function TAdrockDecodeDate.IsSeperator(Ch : Char) : Boolean;
 begin
-  if (ch in ['.', '/',',']) then
+  if CharInSet(ch, ['.', '/',',']) then
     Result := TRUE
   else
     Result := FALSE;
@@ -583,7 +583,7 @@ var
   I: Integer;
 begin
   I := Pos;
-  while (I <= Length(S)) and ((IsWhiteSpace(S[I]) = TRUE) or (IsSeperator(S[i]) = TRUE) or (S[i] in ['-'])) do
+  while (I <= Length(S)) and ((IsWhiteSpace(S[I]) = TRUE) or (IsSeperator(S[i]) = TRUE) or CharInSet(S[i], ['-'])) do
     Inc(I);
   Pos := I;
 end;
@@ -617,13 +617,13 @@ begin
          begin
          if (WorkDate[Offset] = '-') then
              for XPos := 1 to 7 do
-               if (CompareText(Result, ShortMonthNames[XPos])=0) or (CompareText(Result , LongMonthNames[Xpos])= 0) then
+               if (CompareText(Result, FormatSettings.ShortMonthNames[XPos])=0) or (CompareText(Result , FormatSettings.LongMonthNames[Xpos])= 0) then
                  exit;
          end
        else
          if (WorkDate[Offset] = '-') then
            exit;
-       IsANumber := (WorkDate[Offset] in ['0'..'9']);
+       IsANumber := CharInSet(WorkDate[Offset], ['0'..'9']);
        Result := Result + WorkDate[Offset];
        Inc(Offset);
       end;
@@ -778,7 +778,7 @@ Var
 begin
   Result := '';
   for Pos := 0 to length(Token)-1 do
-   if (Token[1+Pos] in ['0'..'9',TimeSeparator]) then
+   if CharInSet(Token[1+Pos], ['0'..'9',FormatSettings.TimeSeparator]) then
      Result := Result + Token[1+Pos];
 end;
 
@@ -788,22 +788,22 @@ Var
  NewToken, EndOfToken : String;
 begin
   result := FALSE;
-  if (Token[1] in ['0'..'9']) then
+  if CharInSet(Token[1], ['0'..'9']) then
    begin
      { Check to see if the last digit is a number, if not then maybe is is like 20th, or 1st }
-     if not (Token[Length(Token)] in ['0'..'9', TimeSeparator]) then
+     if not CharInSet(Token[Length(Token)], ['0'..'9', FormatSettings.TimeSeparator]) then
        begin
          NewToken :=  StripNonNumericsFromToken(Token);
          EndOfToken := Copy(Token, length(NewToken)+1, 255);
-         if (Pos(TimeSeparator, Token) > 0) then
-           if (EndOfToken = Uppercase(TimeAMString)) then
+         if (Pos(FormatSettings.TimeSeparator, Token) > 0) then
+           if (EndOfToken = Uppercase(FormatSettings.TimeAMString)) then
             begin
-             Tokens.Add(uppercase(TimeAMString));
+             Tokens.Add(uppercase(FormatSettings.TimeAMString));
              NewToken := Copy(Token, 1, Length(NewToken));
             end
-           else if (EndOfToken = Uppercase(TimePMString)) then
+           else if (EndOfToken = Uppercase(FormatSettings.TimePMString)) then
             begin
-             Tokens.Add(Uppercase(TimePMString));
+             Tokens.Add(Uppercase(FormatSettings.TimePMString));
              NewToken := Copy(Token, 1, Length(NewToken));
             end;
          Token := NewToken;
@@ -858,7 +858,7 @@ Var
 begin
   result := TRUE;
   for POs := 0 to length(token)-1 do
-   if not (Token[Pos+1] in ['0'..'9']) then
+   if not CharInSet(Token[Pos+1], ['0'..'9']) then
      begin
        result := FALSE;
        exit;
@@ -1010,19 +1010,19 @@ begin
 
     { }
     for XPos := 1 to 12 do
-      IsTokenInList(Uppercase(ShortMonthNames[XPos]), Uppercase(LongMonthNames[XPos]));
+      IsTokenInList(Uppercase(FormatSettings.ShortMonthNames[XPos]), Uppercase(FormatSettings.LongMonthNames[XPos]));
 
     { }
     for XPos := 1 to 7 do
-      IsTokenInList(Uppercase(ShortDayNames[XPos]), Uppercase(LongDayNames[XPos]));
+      IsTokenInList(Uppercase(FormatSettings.ShortDayNames[XPos]), Uppercase(FormatSettings.LongDayNames[XPos]));
 
     { }
     for XPos := 1 to 7 do
-      IsTokenInList(Uppercase(ShortDayNames[XPos]), Uppercase(LongDayNames[XPos]+'s'));
+      IsTokenInList(Uppercase(FormatSettings.ShortDayNames[XPos]), Uppercase(FormatSettings.LongDayNames[XPos]+'s'));
 
     { }
     for XPos := 1 to 7 do
-      IsTokenInList(Uppercase(ShortDayNames[XPos]), Uppercase(LongDayNames[XPos]+'''s'));
+      IsTokenInList(Uppercase(FormatSettings.ShortDayNames[XPos]), Uppercase(FormatSettings.LongDayNames[XPos]+'''s'));
 
     DecodedFields.Clear;
     XPos := 0;
@@ -1079,16 +1079,16 @@ begin
          TokenOption := [dfoStart]
        else if (Tokens.Strings[XPos] = 'END') then
          TokenOption := [dfoEND]
-       else if (Tokens.Strings[XPos] = Uppercase(TimeAMString)) then
+       else if (Tokens.Strings[XPos] = Uppercase(FormatSettings.TimeAMString)) then
          TokenOption := [dfoAM]
-       else if (Tokens.Strings[XPos] = Uppercase(TimePMString)) then
+       else if (Tokens.Strings[XPos] = Uppercase(FormatSettings.TimePMString)) then
          TokenOption := [dfoPM]
-       else if (Pos(TimeSeparator, Tokens.Strings[XPos]) > 0) then
+       else if (Pos(FormatSettings.TimeSeparator, Tokens.Strings[XPos]) > 0) then
          TokenOption := [dfoTime];
 
        Extra := 0;
        for XXPos := 1 to 7 do
-        if (Tokens.Strings[XPos] = Uppercase(ShortDayNames[XXPos])) then
+        if (Tokens.Strings[XPos] = Uppercase(FormatSettings.ShortDayNames[XXPos])) then
           begin
             TokenOption := TokenOption + [dfoDayName];
             Extra := XXPOs;
@@ -1096,7 +1096,7 @@ begin
           end;
 
        for XXPos := 1 to 12 do
-         if (Tokens.Strings[XPos] = Uppercase(ShortMonthNames[XXPos])) then
+         if (Tokens.Strings[XPos] = Uppercase(FormatSettings.ShortMonthNames[XXPos])) then
            begin
              TokenOption := TokenOption + [dfoMonthName];
              Extra := XXPOs;
@@ -1150,7 +1150,7 @@ begin
      if (DecodedFields.Items[POs].Used = FALSE) then
        if (dfoTime in DecodedFields.Items[POs].FoundFlags) then
          begin
-            TimeSepPos := System.Pos(TimeSeparator, DecodedFields.Items[Pos].Item);
+            TimeSepPos := System.Pos(FormatSettings.TimeSeparator, DecodedFields.Items[Pos].Item);
             if (TimeSepPos < 2) or (TimeSepPos = length(DecodedFields.Items[Pos].Item)) then
               begin
                 TheTime := 0;
@@ -1310,13 +1310,13 @@ end;
 
 Function TAdrockDecodeDate.JoinMultiWords : Word;
 Var
- tmp : Word; 
- NewNumber : longint;
- MainNumberFields,
- Pos : Word;
- NumberOffsetsUsed : Word;
- NumberOffsets      : Array[0..9] of Integer;
- NumberOffsetValues : Array[0..9] of Integer;
+  tmp : Word;
+  NewNumber : longint;
+  MainNumberFields,
+  Pos : Word;
+  NumberOffsetsUsed : Word;
+  NumberOffsets      : Array[0..9] of Integer;
+  NumberOffsetValues : Array[0..9] of Integer;
 begin
  Result := 0;
  NumberOffsetsUsed := 0;

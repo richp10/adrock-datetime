@@ -395,7 +395,6 @@ var
   StartDayOfWeek    : Integer;  { Required uncase we go to a number < 0 }
 //  HadtoGoBackToThePast,
   Is4Days           : Boolean;
-  CheckEachDay      : Boolean;
   DayOfWeekForJan01 : TAdrockWeekDay;
   Week              : Integer;
   NextYear,
@@ -441,8 +440,7 @@ begin
      StartDayOfWeek := StartDayOfWeek + 7;
 
    TestDate := Jan01;
-//   StandardDayOfWeek := DayOfWeek(Jan01);
-   CheckEachDay := FALSE;
+
    while (TestDate < WorkDate) do
     begin
       TestDate := TestDate + 1;
@@ -453,14 +451,11 @@ begin
         StartDayOfWeek := 1;
         Inc(Week);
 
-        if (NextJan01 >= TestDate) and (NextJan01 <= testDate+ 6) then
-          CheckEachDay := TRUE;
         if (NextJan01 < TestDate) then
          begin
            Week := 1;
            Inc(NextYear);
            NextJan01 := EncodeDate(NextYear, 1,1);
-           CheckEachDay := FALSE;
          end;
        end;
     end;
